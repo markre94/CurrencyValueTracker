@@ -1,11 +1,33 @@
 import requests
 from bs4 import BeautifulSoup
 from time import sleep
+from twilio.rest import Client
+import tkinter as tk
+
+
+class MyFirstGUI:
+    def __init__(self, master):
+        self.master = master
+        master.title("A simple GUI")
+
+        self.label = tk.Label(master, text=PriceTracker.track_price())
+        self.label.pack()
 
 
 class PriceTracker:
-    def make_phone_call(self):
-        pass
+    @staticmethod
+    def make_phone_call():
+        auth_token = 'f724b54966b1e70ea3571f5e75c8920e'
+        account_sid = 'AC3db5ec02ff2806df335242cef7f07c87'
+        client = Client(account_sid, auth_token)
+
+        call = client.calls.create(
+            url='http://demo.twilio.com/docs/classic.mp3',
+            to='+48668397153',
+            from_='+16505499680'
+        )
+
+        print(call.sid)
 
     @staticmethod
     def track_price():
@@ -18,13 +40,16 @@ class PriceTracker:
 
 
 if __name__ == "__main__":
-
     tracker = PriceTracker()
-    while True:
-        price = tracker.track_price()
-        if price < 4.399:
-            print(f'Warning! Price dropeed under 4.399 pln {price}')
-        else:
-            print(f"Current price for Euro in PLN is {price}")
+    # while True:
+    #     price = tracker.track_price()
+    #     if price < 4.399:
+    #         print(f'Warning! Price dropeed under 4.399 pln {price}')
+    #         print('Dialing an emergency call!')
+    #         tracker.make_phone_call()
+    #     else:
+    #         print(f"Current price for Euro in PLN is {price}")
 
-
+    root = tk.Tk()
+    my_gui = MyFirstGUI(root)
+    root.mainloop()
