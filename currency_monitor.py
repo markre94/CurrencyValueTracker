@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from time import sleep
 from twilio.rest import Client
 from datetime import datetime
+import csv
+
 
 class PriceTracker:
     @staticmethod
@@ -18,15 +20,16 @@ class PriceTracker:
         )
 
         print(call.sid)
+
     @staticmethod
-    def send_a_report():
+    def send_a_report(message: str):
         auth_token = 'f724b54966b1e70ea3571f5e75c8920e'
         account_sid = 'AC3db5ec02ff2806df335242cef7f07c87'
         client = Client(account_sid, auth_token)
 
         message = client.messages \
             .create(
-            body='This is the ship that made the Kessel Run in fourteen parsecs?',
+            body=message,
             to='+48668397153',
             from_='+16505499680'
         )
@@ -42,10 +45,14 @@ class PriceTracker:
         sleep(1)
         return float(elem.text)
 
+class FileGenerator():
+    def write_to_file(self, name):
+        with open(name +'.csv', 'w') as f:
+            csv.DictWriter()
 
 if __name__ == "__main__":
     tracker = PriceTracker()
-    tracker.send_a_report()
+
     # var = True
     # while True:
     #     price = tracker.track_price()
