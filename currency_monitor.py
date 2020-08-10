@@ -2,17 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 from twilio.rest import Client
-import tkinter as tk
-
-
-class MyFirstGUI:
-    def __init__(self, master):
-        self.master = master
-        master.title("A simple GUI")
-
-        self.label = tk.Label(master, text=PriceTracker.track_price())
-        self.label.pack()
-
+from datetime import datetime
 
 class PriceTracker:
     @staticmethod
@@ -28,6 +18,20 @@ class PriceTracker:
         )
 
         print(call.sid)
+    @staticmethod
+    def send_a_report():
+        auth_token = 'f724b54966b1e70ea3571f5e75c8920e'
+        account_sid = 'AC3db5ec02ff2806df335242cef7f07c87'
+        client = Client(account_sid, auth_token)
+
+        message = client.messages \
+            .create(
+            body='This is the ship that made the Kessel Run in fourteen parsecs?',
+            to='+48668397153',
+            from_='+16505499680'
+        )
+
+        print(message.sid)
 
     @staticmethod
     def track_price():
@@ -41,15 +45,15 @@ class PriceTracker:
 
 if __name__ == "__main__":
     tracker = PriceTracker()
+    tracker.send_a_report()
+    # var = True
     # while True:
     #     price = tracker.track_price()
     #     if price < 4.399:
     #         print(f'Warning! Price dropeed under 4.399 pln {price}')
-    #         print('Dialing an emergency call!')
-    #         tracker.make_phone_call()
+    #
+    #         var = False
     #     else:
     #         print(f"Current price for Euro in PLN is {price}")
-
-    root = tk.Tk()
-    my_gui = MyFirstGUI(root)
-    root.mainloop()
+    #     print('Dialing an emergency call!')
+    #     tracker.make_phone_call()
