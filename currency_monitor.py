@@ -4,6 +4,7 @@ from time import sleep
 from twilio.rest import Client
 from datetime import datetime
 import csv
+import schedule
 
 
 class PriceTracker:
@@ -47,28 +48,34 @@ class PriceTracker:
 
     @staticmethod
     def check_min_value(tracked_price, min_value: float):
-        if tracked_price < 4.399:
+        if tracked_price < min_value:
             print(f'Warning! Price dropeed under {min_value} pln {tracked_price}')
             PriceTracker.make_phone_call()
         else:
             print(f"Current price for Euro in PLN is {tracked_price}")
 
-
     @staticmethod
-    def write_to_file():
+    def write_to_file(from_date: datetime, to_date: datetime):
         with open(f'{datetime.utcnow().date()}_data.csv', 'w', newline='') as file:
             fieldnames = ['date', 'value_in_pln']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
 
-            while True:
+            while from_date > to_date:
+
                 price = PriceTracker.track_price()
                 writer.writerow({'date': datetime.utcnow().strftime("%H:%M:%S"), 'value_in_pln': price})
 
                 PriceTracker.check_min_value(tracked_price=price, min_value=4.399)
 
 
-if __name__ == "__main__":
-    PriceTracker().write_to_file()
+    @staticmethod
+    def generate_report():
+        pass
 
+
+if __name__ == "__main__":
+    # wont work
+    PriceTracker().write_to_file(from_date=datetime.today(), to_date=datetime(2020,8,11,18,53,56))
+    print('Finished with price tracking')
 
