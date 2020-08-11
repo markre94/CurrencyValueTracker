@@ -55,13 +55,13 @@ class PriceTracker:
             print(f"Current price for Euro in PLN is {tracked_price}")
 
     @staticmethod
-    def write_to_file(from_date: datetime, to_date: datetime):
+    def write_to_file(to_date: datetime):
         with open(f'{datetime.utcnow().date()}_data.csv', 'w', newline='') as file:
             fieldnames = ['date', 'value_in_pln']
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
 
-            while from_date > to_date:
+            while datetime.today() < to_date:
 
                 price = PriceTracker.track_price()
                 writer.writerow({'date': datetime.utcnow().strftime("%H:%M:%S"), 'value_in_pln': price})
@@ -75,7 +75,6 @@ class PriceTracker:
 
 
 if __name__ == "__main__":
-    # wont work
-    PriceTracker().write_to_file(from_date=datetime.today(), to_date=datetime(2020,8,11,18,53,56))
+    PriceTracker().write_to_file(to_date=datetime(2020,8,11,19,13,57))
     print('Finished with price tracking')
 
