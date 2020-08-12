@@ -2,9 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 from twilio.rest import Client
-from datetime import datetime
-from datetime import timedelta
-from datetime import date
+from datetime import datetime, timedelta, date
+from secrets import account_sid,auth_token
 import csv
 import statistics
 
@@ -17,8 +16,7 @@ class PriceTracker:
 
     @staticmethod
     def make_phone_call():
-        auth_token = 'f724b54966b1e70ea3571f5e75c8920e'
-        account_sid = 'AC3db5ec02ff2806df335242cef7f07c87'
+
         client = Client(account_sid, auth_token)
 
         call = client.calls.create(
@@ -31,8 +29,7 @@ class PriceTracker:
 
     @staticmethod
     def send_a_report(message: str):
-        auth_token = 'f724b54966b1e70ea3571f5e75c8920e'
-        account_sid = 'AC3db5ec02ff2806df335242cef7f07c87'
+
         client = Client(account_sid, auth_token)
 
         message = client.messages \
@@ -99,21 +96,22 @@ class PriceTracker:
                 if float(value ['value_in_pln']) < self.min_value:
                     under_min_value += 1
 
-            body_of_report = f'The daily report of the Value Tracker. The mean EUR/PLN price for {datetime.today().date()} was' \
-                             f' {round(statistics.mean(values_of_eur), 3)}. The currency dropped {under_min_value} times under critical value.'
+            body_of_report = f'The daily report of the Value Tracker. The mean EUR/PLN price for ' \
+                             f'{datetime.today().date()} was' \
+                             f' {round(statistics.mean(values_of_eur), 3)}. The currency dropped {under_min_value}' \
+                             f' times under critical value.'
             return body_of_report
 
     @staticmethod
     def get_tommorows_date():
         """ Method returns the tommorrows date at noon. The tracking will last till the end of current day"""
-        # y = datetime.today().date() + timedelta(days=1)
-        # min = datetime.min.time(0,0)
         dt = datetime.combine(date.today() + timedelta(days=1), datetime.min.time())
         return dt
 
 
 if __name__ == "__main__":
     while True:
+        print(f'Tracking EUR/VAL for the {date.today()}')
         bot = PriceTracker(min_value=4.402, track_to=PriceTracker.get_tommorows_date())
 
         report = bot.write_to_file()
@@ -121,3 +119,4 @@ if __name__ == "__main__":
         bot.send_a_report(message=report)
 
         print('Finished with price tracking for tommorrow. The report has been send.')
+        sleep(10)
