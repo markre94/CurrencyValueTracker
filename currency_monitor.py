@@ -58,7 +58,6 @@ class PriceTracker:
 
         soup = BeautifulSoup(r.text, 'html.parser')
         price_elem = soup.find('span', {"class": "Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)"})
-        sleep(10)
         return float(price_elem.text)
 
     def check_min_value(self, tracked_price):
@@ -85,6 +84,7 @@ class PriceTracker:
                 writer.writerow({'date': datetime.today().strftime("%H:%M:%S"), 'value_in_pln': value_of_currency})
 
                 self.check_min_value(tracked_price=value_of_currency)
+                sleep(10)
 
         return self.generate_report(file.name)
 
