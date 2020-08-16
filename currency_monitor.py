@@ -93,7 +93,7 @@ class PriceTracker:
                 writer.writerow({'date': datetime.today().strftime("%H:%M:%S"), 'value_in_pln': value_of_currency})
 
                 self.check_min_value(tracked_price=value_of_currency)
-                sleep(10)
+                sleep(1)
 
         return self.generate_report(file.name)
 
@@ -124,7 +124,7 @@ class PriceTracker:
 if __name__ == "__main__":
     while True:
         print(f'Tracking EUR/VAL for the {date.today()}')
-        tracker = PriceTracker(min_value=4.4, track_to=datetime.today() + timedelta(minutes=1),
+        tracker = PriceTracker(min_value=4.2, track_to=datetime.today() + timedelta(minutes=1),
                                emergency_number='+48668397153')
         report = tracker.write_to_file()
         tracker.send_a_message(message=report)

@@ -24,9 +24,10 @@ def test_track_price_failed(requests_mock: MagicMock()):
     with pytest.raises(ConnectionError):
         PriceTracker.track_price()
 
-
+#TO DO
 @mock.patch('currency_monitor.requests')
-def test_track_price_success(requests_mock: MagicMock()):
+@mock.patch('currency_monitor.BeautifulSoup')
+def test_track_price_success(mocked_soup: MagicMock(),requests_mock: MagicMock()):
     get_mock = MagicMock()
     get_mock.text = "test_text"
     get_mock.status_code = 200
@@ -35,7 +36,7 @@ def test_track_price_success(requests_mock: MagicMock()):
     PriceTracker.track_price()
 
 
-@pytest.mark.parametrize("price", [4.16, 4.1, 4.0, 4.2, 3.9])
+@pytest.mark.parametrize("price", [4.22, 4.1, 4.0, 4.2, 3.9])
 @mock.patch('currency_monitor.PriceTracker.make_phone_call')
 def test_min_value_call(mocked_phone_call, price):
     test_tracker = PriceTracker(min_value=4.23, track_to=datetime.today() + timedelta(days=1), emergency_number="111")
@@ -59,7 +60,7 @@ def test_min_value_print(mocked_print, price):
     test_tracker.check_min_value(price)
     assert mocked_print.called_once_with(price)
 
-
+#TODO
 @mock.patch('currency_monitor.PriceTracker.check_min_value')
 def test_write_to_file(mocked_check_value: MagicMock()):
     test_tracker = PriceTracker(min_value=4.23, track_to=datetime.today() + timedelta(seconds=1),
