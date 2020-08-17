@@ -84,18 +84,21 @@ class PriceTracker:
     def write_to_file(self):
         """Writes a tracked views to to the csv file to generate report"""
         name = datetime.today().date()
-        with open(f'{name}.csv', 'w', newline='') as file:
+        with open(f'{name}.csv', 'w', newline='') as file_create:
             fieldnames = ['date', 'value_in_pln']
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer = csv.DictWriter(file_create, fieldnames=fieldnames)
             writer.writeheader()
-            while datetime.today() < self.track_to:
-                value_of_currency = PriceTracker.track_price()
+        while datetime.today() < self.track_to:
+            value_of_currency = PriceTracker.track_price()
+            with open(f'{file_create.name}', 'a', newline='') as file_append:
+                fieldnames = ['date', 'value_in_pln']
+                writer = csv.DictWriter(file_append, fieldnames=fieldnames)
                 writer.writerow({'date': datetime.today().strftime("%H:%M:%S"), 'value_in_pln': value_of_currency})
 
-                self.check_min_value(tracked_price=value_of_currency)
-                sleep(1)
+            self.check_min_value(tracked_price=value_of_currency)
+            sleep(1)
 
-        return self.generate_report(file.name)
+        return self.generate_report(file_create.name)
 
     def generate_report(self, file_name: str):
         """Generates a daily report that will be send with SMS message"""
@@ -125,7 +128,7 @@ if __name__ == "__main__":
     while True:
         print(f'Tracking EUR/VAL for the {date.today()}')
         tracker = PriceTracker(min_value=4.2, track_to=datetime.today() + timedelta(minutes=1),
-                               emergency_number='+48668397153')
+                               emergency_number='specified_number')
         report = tracker.write_to_file()
         tracker.send_a_message(message=report)
         print('Finished with price tracking for tommorrow. The report has been send.')
