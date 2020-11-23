@@ -37,3 +37,4 @@ are all contined in the Twilio docs. Please visit https://www.twilio.com/docs fo
 - [ ] improve the current script by adding the features like generating a weekly reports containing line plots that would describe variabilty of the monitored price
       and sending it as a fully generated report in PDF via e-mail. The e-mail address will be specified by the user. 
 - [ ] add data science to predict the price of the tracked currency
+- [ ] restruct the code. Use SOLID and Python Design Patterns.
